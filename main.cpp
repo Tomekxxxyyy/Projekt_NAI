@@ -2,13 +2,16 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <cstdio>
-
+/*
+link do projektu https://github.com/Tomekxxxyyy/Projekt_NAI
+wykorzystałem originalne tutoriale http://docs.opencv.org/2.4/doc/tutorials/tutorials.html      
+*/
 using namespace cv;
 using namespace std;
 int main( int argc, char** argv ) {
 	int delay = 30;
-        int low_r=30, low_g=30, low_b=30;
-        int high_r=100, high_g=100, high_b=100;
+        int low_h=0, low_s=0, low_v=0;
+        int high_h=255, high_s=255, high_v=255;
         int canny_edge = 100, threshold = 50;
 	char c;
         
@@ -20,16 +23,17 @@ int main( int argc, char** argv ) {
        	vector<Vec3f> circles;
         vector<vector<Point> > contours;
         
-        createTrackbar("Low R","Control", &low_r, 255);
-        createTrackbar("High R","Control", &high_r, 255);
-        createTrackbar("Low G","Control", &low_g, 255);
-        createTrackbar("High G","Control", &high_g, 255);
-        createTrackbar("Low B","Control", &low_b, 255);
-        createTrackbar("High B","Control", &high_b, 255);
+        createTrackbar("Low H","Control", &low_h, 255);
+        createTrackbar("High H","Control", &high_h, 255);
+        createTrackbar("Low S","Control", &low_s, 255);
+        createTrackbar("High S","Control", &high_s, 255);
+        createTrackbar("Low V","Control", &low_v, 255);
+        createTrackbar("High V","Control", &high_v, 255);
         
         createTrackbar("Canny Edge","Control", &canny_edge, 250);
         createTrackbar("Threshold","Control", &threshold, 150);
-                
+        
+        
         while(true) {
             cap >> frame;
             // Wykrywanie koła
@@ -39,7 +43,7 @@ int main( int argc, char** argv ) {
             
             // Wykrywanie koloru
             cvtColor(frame, imgHSV, COLOR_BGR2HSV);
-            inRange(frame,Scalar(low_b,low_g,low_r), Scalar(high_b,high_g,high_r),frame_threshold);
+            inRange(imgHSV,Scalar(low_h,low_s,low_v), Scalar(high_h,high_s,high_v),frame_threshold);
             
             erode(frame_threshold, frame_threshold, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
             dilate(frame_threshold, frame_threshold, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
